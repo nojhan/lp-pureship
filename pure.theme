@@ -1,0 +1,306 @@
+
+_lp_pure_theme_activate() {
+    local lp_terminal_format
+
+    #
+    # Easy to use colors.
+    #
+    local lp_terminal_format af_color='' ab_color=''
+
+    # Colors: variables are local so they will have a value only
+    # during config loading and will not conflict with other values
+    # with the same names defined by the user outside the config.
+    local BOLD="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${_LP_CLOSE_ESC}"
+
+    # Foreground colors
+    __lp_foreground_color 0
+    local BLACK="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_GRAY="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 1
+    local RED="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_RED="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+    __lp_foreground_color 0
+    __lp_background_color 1
+    local WARN_RED="${_LP_OPEN_ESC}${af_color}${ab_color}${_LP_CLOSE_ESC}"
+    __lp_foreground_color 7
+    local CRIT_RED="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${ab_color}${_LP_CLOSE_ESC}"
+    __lp_foreground_color 3
+    local DANGER_RED="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${ab_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 2
+    local GREEN="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_GREEN="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 3
+    local YELLOW="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_YELLOW="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 4
+    local BLUE="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_BLUE="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 5
+    local PURPLE="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local MAGENTA="${PURPLE}"
+    local PINK="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_PURPLE="${PINK}"
+    local BOLD_MAGENTA="${PINK}"
+
+    __lp_foreground_color 6
+    local CYAN="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_CYAN="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 7
+    local WHITE="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_WHITE="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    # NO_COL is special: it will be used at runtime, not just during config loading
+    NO_COL="${_LP_OPEN_ESC}${_LP_TI_RESET-}${_LP_CLOSE_ESC}"
+
+    #
+    # End of colors section.
+    #
+
+    # Configuration variables.
+    LP_PURE_GIT_DIRTY=${LP_PURE_GIT_DIRTY:-"*"}
+    LP_PURE_GIT_DOWN_ARROW=${LP_PURE_GIT_DOWN_ARROW:-"⇣"}
+    LP_PURE_GIT_UP_ARROW=${LP_PURE_GIT_UP_ARROW:-"⇡"}
+    LP_PURE_MARK_JOBS=${LP_PURE_MARK_JOBS:-"✦"}
+    LP_PURE_COLOR_JOBS=${LP_PURE_COLOR_JOBS:-$RED}
+
+    # Config with a direct counterpart in LP.
+    LP_MARK_DEFAULT="❯"
+    LP_MARK_STASH="≡"
+
+    # Enable the few features implemented by Pure.
+    LP_RUNTIME_THRESHOLD=5
+    LP_ENABLE_JOBS=1
+    LP_ENABLE_RUNTIME=1
+    LP_ENABLE_VIRTUALENV=1
+    LP_ENABLE_TITLE=1
+    LP_ENABLE_COLOR=1
+    LP_ENABLE_ERROR=1
+
+    # Disable almost all features.
+    LP_USER_ALWAYS=0
+    LP_ENABLE_PERM=0
+    LP_ENABLE_SHORTEN_PATH=0
+    LP_ENABLE_PROXY=0
+    LP_ENABLE_TEMP=0
+    LP_ENABLE_DETACHED_SESSIONS=0
+    LP_ENABLE_LOAD=0
+    LP_ENABLE_BATT=0
+    LP_ENABLE_GIT=1
+    LP_ENABLE_SVN=0
+    LP_ENABLE_FOSSIL=0
+    LP_ENABLE_HG=0
+    LP_HG_COMMAND=0
+    LP_ENABLE_BZR=0
+    LP_ENABLE_TIME=0
+    LP_TIME_ANALOG=0
+    LP_ENABLE_RUNTIME_BELL=0
+    LP_ENABLE_NODE_VENV=0
+    LP_ENABLE_RUBY_VENV=0
+    LP_ENABLE_TERRAFORM=0
+    LP_ENABLE_CONTAINER=0
+    LP_ENABLE_SCLS=0
+    LP_ENABLE_AWS_PROFILE=0
+    LP_ENABLE_VCS_ROOT=0
+    LP_ENABLE_SCREEN_TITLE=0
+    LP_ENABLE_TITLE_COMMAND=0
+    LP_ENABLE_SSH_COLORS=0
+    LP_DISABLED_VCS_PATHS=0
+    LP_ENABLE_SUDO=0
+    LP_ENABLE_DIRSTACK=0
+    LP_ENABLE_KUBECONTEXT=0
+    LP_ENABLE_KUBE_NAMESPACE=0
+    LP_ENABLE_CMAKE=0
+    LP_ENABLE_SHLVL=0
+    LP_ENABLE_WIFI_STRENGTH=0
+
+    LP_COLOR_PATH="$BLUE"
+    LP_COLOR_PATH_SEPARATOR="$BLUE"
+    LP_COLOR_PATH_VCS_ROOT="$BOLD"
+    LP_COLOR_PATH_LAST_DIR="$BOLD"
+    LP_COLOR_PATH_ROOT="$BOLD_YELLOW"
+
+    LP_COLOR_ERR="$RED"
+    LP_COLOR_MARK="$MAGENTA"
+
+    lp_terminal_format 242 -1 0 0 15 -1
+    LP_COLOR_USER_LOGGED="$lp_terminal_format"
+    LP_COLOR_USER_ALT="$BOLD"
+    LP_COLOR_USER_ROOT="$BOLD_YELLOW"
+
+    lp_terminal_format 242 -1 0 0 15 -1
+    LP_COLOR_HOST="$lp_terminal_format"
+
+    lp_terminal_format 242 -1 0 0 15 -1
+    LP_COLOR_UP="$lp_terminal_format"
+    LP_COLOR_COMMITS="$CYAN"
+    LP_COLOR_COMMITS_BEHIND="$CYAN"
+    LP_COLOR_CHANGES="$CYAN"
+    LP_COLOR_DIFF="$CYAN"
+
+    LP_COLOR_RUNTIME="$YELLOW"
+    LP_COLOR_VIRTUALENV="$CYAN"
+
+    # The user or connection type is not expected to change from inside the
+    # shell, so we build this just once.
+    if _lp_username_color; then
+        LP_USER="$lp_username_color"
+    else
+        LP_USER=
+    fi
+
+    if _lp_hostname_color ; then
+        LP_HOST="$lp_hostname_color "
+    else
+        LP_HOST=
+    fi
+}
+
+_lp_pure_theme_directory() {
+    local lp_path_format
+    _lp_path_format "$LP_COLOR_PATH" "$LP_COLOR_PATH_LAST_DIR" "$LP_COLOR_PATH_VCS_ROOT" "$LP_COLOR_PATH_SHORTENED" "/" "$LP_COLOR_PATH_SEPARATOR"
+
+    LP_PWD="${lp_path_format}${NO_COL}"
+}
+
+_lp_pure_theme_prompt() {
+    if _lp_jobcount_color; then
+        LP_JOBS=" ${LP_PURE_COLOR_JOBS}${LP_PURE_MARK_JOBS}${NO_COL}"
+    else
+        LP_JOBS=
+    fi
+
+    if _lp_python_env_color; then
+        LP_VENV="$lp_python_env_color "
+    else
+        LP_VENV=
+    fi
+
+    if _lp_runtime_color; then
+        LP_RUNTIME=" $lp_runtime_color"
+    else
+        LP_RUNTIME=
+    fi
+
+    if _lp_error_color; then
+        LP_ERR="$lp_error_color"
+    else
+        LP_ERR=
+    fi
+
+    if _lp_find_vcs && _lp_pure_vcs; then
+        LP_VCS=" $lp_vcs_details_color"
+    else
+        LP_VCS=
+    fi
+
+    # No smart mark.
+    LP_MARK="${LP_MARK_DEFAULT}${NO_COL}"
+
+    _lp_pure_theme_prompt_template
+}
+
+
+_lp_pure_theme_prompt_template() {
+    if [[ -f "${LP_PS1_FILE-}" ]]; then
+        # shellcheck source=liquid.ps1
+        source "$LP_PS1_FILE"
+    fi
+
+    if [[ -z "${LP_PS1-}" ]]; then
+        PS1="${LP_USER}${LP_HOST}${LP_PWD}${LP_VCS}${LP_RUNTIME}\n${LP_VENV}${LP_JOBS}"
+
+        if [[ -n "${LP_ERR}" ]] ; then
+            PS1+="${LP_COLOR_ERR}${LP_MARK} "
+        else
+            PS1+="${LP_COLOR_MARK}${LP_MARK} "
+        fi
+
+        # Get the core sections without prompt escapes and make them into a title.
+        _lp_formatted_title "${LP_USER}${LP_HOST}${lp_path-}${LP_MARK}"
+    else
+        PS1=$LP_PS1
+    fi
+}
+
+_lp_pure_vcs() {
+    local branch
+    if _lp_vcs_branch; then
+        branch="$lp_vcs_branch"
+
+    # Pure does not handle booknmarks or tags.
+    #     if _lp_vcs_bookmark; then
+    #         branch+=": $lp_vcs_bookmark"
+    #     fi
+    # elif _lp_vcs_bookmark; then
+    #     branch="$lp_vcs_bookmark"
+    # elif _lp_vcs_tag; then
+    #     branch="tag: $lp_vcs_tag"
+    else
+        _lp_vcs_commit_id
+        branch="${lp_vcs_commit_id:0:7}"
+    fi
+
+    lp_vcs_details_color="$LP_COLOR_UP"
+
+    local has_commit=
+    if _lp_vcs_commits_off_remote; then
+        lp_vcs_details_color="$LP_COLOR_COMMITS_BEHIND"
+        if [[ "$lp_vcs_commit_ahead" -ne "0" && "$lp_vcs_commit_behind" -ne "0" ]]; then
+            has_commit="${LP_COLOR_COMMITS}${LP_PURE_GIT_UP_ARROW}{NO_COL}${LP_COLOR_COMMITS_BEHIND}${LP_PURE_GIT_DOWN_ARROW}${NO_COL}"
+        elif [[ "$lp_vcs_commit_ahead" -ne "0" ]]; then
+            has_commit="${LP_COLOR_COMMITS}${LP_PURE_GIT_UP_ARROW}${NO_COL}"
+            lp_vcs_details_color="$LP_COLOR_COMMITS"
+        elif [[ "$lp_vcs_commit_behind" -ne "0" ]]; then
+            has_commit="${LP_COLOR_COMMITS_BEHIND}${LP_PURE_GIT_DOWN_ARROW}${NO_COL}"
+        fi
+    fi
+
+    local ret has_lines=
+    if _lp_vcs_uncommitted_files; then
+        _lp_vcs_unstaged_lines; ret=$?
+        # Only show unstaged changes if the VCS supports staging, otherwise
+        # show uncommitted changes
+        if (( ret == 0 )); then
+            has_lines="${LP_PURE_GIT_DIRTY}"
+        elif (( ret == 1 )); then
+            has_lines=""
+        else
+            _lp_vcs_uncommitted_lines
+            has_lines="${LP_PURE_GIT_DIRTY}"
+        fi
+        lp_vcs_details_color="$LP_COLOR_CHANGES"
+    fi
+
+    lp_vcs_details_color+="$branch"
+    if [[ -n "$has_lines" || -n "$has_commit" ]]; then
+        lp_vcs_details_color+="${NO_COL}"
+        if [[ -n "$has_lines" ]]; then
+            lp_vcs_details_color+="${LP_COLOR_DIFF}${has_lines}${NO_COL}${has_commit}"
+        fi
+        lp_vcs_details_color+="${has_commit}"
+    fi
+
+    if _lp_vcs_head_status; then
+        lp_vcs_details_color+=" $LP_COLOR_CHANGES$lp_vcs_head_status"
+        if [[ -n "${lp_vcs_head_details-}" ]]; then
+            lp_vcs_details_color+=" ${lp_vcs_head_details}"
+        fi
+    fi
+
+    if _lp_vcs_stash_count; then
+        lp_vcs_details_color+=" $LP_COLOR_COMMITS$LP_MARK_STASH"
+    fi
+
+    # Pure does not show untracked files.
+    # if _lp_vcs_untracked_files; then
+    #     lp_vcs_details_color+="$LP_COLOR_CHANGES$LP_MARK_UNTRACKED"
+    # fi
+
+    lp_vcs_details_color+="$NO_COL"
+}
