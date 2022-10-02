@@ -1,0 +1,287 @@
+
+_lp_liquidship_theme_activate() {
+    local lp_terminal_format
+    local lp_terminal_format af_color='' ab_color=''
+
+    __lp_foreground_color 6
+    local CYAN="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_CYAN="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    NO_COL="${_LP_OPEN_ESC}${_LP_TI_RESET-}${_LP_CLOSE_ESC}"
+
+    # Liquid Prompt reconfig
+    LP_MARK_SHLVL="↕️ "
+    LP_MARK_KUBECONTEXT="☸ "
+    LP_MARK_PERM=""
+    LP_COLOR_NOWRITE="${RED}🔒"
+    lp_terminal_format 105 -1 1 0 15 -1
+    # LP_MARK_TERRAFORM="💠" # TODO in LP
+    LP_MARK_ADAPTER=" "
+    LP_MARK_BATTERY=" "
+
+    LP_COLOR_PATH="$CYAN" # Starship use bold cyan, but that hides LP's hint on directories.
+    LP_COLOR_PATH_LAST_DIR="$BOLD_CYAN"
+    LP_COLOR_PATH_SEPARATOR="$CYAN"
+    LP_COLOR_PATH_SHORTENED="$BOLD_CYAN"
+    LP_COLOR_PATH_VCS_ROOT="$BOLD_CYAN"
+
+    # Starship Config
+    LP_LIQUIDSHIP_MARK_SSH="🌐"
+    LP_LIQUIDSHIP_MARK_SUDO="🧙 "
+    LP_LIQUIDSHIP_MARK_MUX="🖽 "
+
+    _lp_user
+    local -i user_type="$?"
+
+    if (( user_type < 2 )); then  # if user is not root
+        if (( LP_ENABLE_SUDO )); then
+            LP_COLOR_MARK_NO_SUDO="$LP_COLOR_MARK"
+        fi
+    else # root!
+        if (( ! LP_ENABLE_VCS_ROOT )); then
+            LP_MARK_DISABLED="$LP_MARK_DEFAULT"
+        fi
+    fi
+
+    # The user or connection type is not expected to change from inside the
+    # shell, so we build this just once.
+    if _lp_username_color; then
+        LP_USER="$lp_username_color in "
+    else
+        LP_USER=
+    fi
+
+    _lp_liquidship_hostname_color
+    LP_HOST="$lp_hostname_color "
+
+    # If we are running in a terminal multiplexer, brackets are colored
+    if _lp_multiplexer; then
+        LP_LIQUIDSHIP_MUX="in ${LP_COLOR_IN_MULTIPLEXER}${LP_LIQUIDSHIP_MARK_MUX}${NO_COL} "
+    else
+        LP_LIQUIDSHIP_MARK_MUX=
+    fi
+
+    _lp_terminal_device
+    # shellcheck disable=SC2034
+    LP_TTYN=$lp_terminal_device
+}
+
+_lp_liquidship_theme_directory() {
+    _lp_default_theme_directory
+}
+
+_lp_liquidship_theme_prompt() {
+    _lp_liquidship_theme_prompt_data
+    _lp_liquidship_theme_prompt_template
+}
+
+_lp_liquidship_theme_prompt_data() {
+    # left of main prompt: space at right
+    if _lp_jobcount_color; then
+        LP_JOBS="$lp_jobcount_color "
+    else
+        LP_JOBS=
+    fi
+    if _lp_temperature_color; then
+        LP_TEMP="$lp_temperature_color "
+    else
+        LP_TEMP=
+    fi
+    if _lp_load_color; then
+        LP_LOAD="$lp_load_color "
+    else
+        LP_LOAD=
+    fi
+    if _lp_battery_color; then
+        LP_BATT="$lp_battery_color "
+    else
+        LP_BATT=
+    fi
+    if _lp_wifi_signal_strength_color; then
+        LP_WIFI="$lp_wifi_signal_strength_color "
+    else
+        LP_WIFI=
+    fi
+
+    if _lp_time_color; then
+        LP_TIME="$lp_time_color "
+    elif _lp_analog_time_color; then
+        LP_TIME="$lp_analog_time_color "
+    else
+        LP_TIME=
+    fi
+
+    if _lp_sudo_active_color; then
+        # LP_COLOR_MARK="$lp_sudo_active_color"
+        LP_LIQUIDSHIP_SUDO="${LP_COLOR_MARK_SUDO}${LP_LIQUIDSHIP_MARK_SUDO}${NO_COL} "
+    fi
+
+    if _lp_dirstack_color; then
+        LP_DIRSTACK="$lp_dirstack_color "
+    else
+        LP_DIRSTACK=
+    fi
+
+    # in main prompt: no space
+    if _lp_http_proxy_color; then
+        LP_PROXY="through $lp_http_proxy_color "
+    else
+        LP_PROXY=
+    fi
+
+    if _lp_shell_level_color; then
+        LP_SHLVL="under $lp_shell_level_color "
+    else
+        LP_SHLVL=
+    fi
+
+    if _lp_python_env_color ; then
+        LP_VENV="via $lp_python_env_color "
+    else
+        LP_VENV=
+    fi
+
+    if _lp_node_env_color; then
+        LP_NODE_VENV="via $lp_node_env_color "
+    else
+        LP_NODE_VENV=
+    fi
+
+    if _lp_ruby_env_color; then
+        LP_RUBY_VENV="via $lp_ruby_env_color "
+    else
+        LP_RUBY_VENV=
+    fi
+
+    if _lp_kubernetes_context_color; then
+        LP_KUBECONTEXT="via $lp_kubernetes_context_color "
+    else
+        LP_KUBECONTEXT=
+    fi
+
+    if _lp_terraform_env_color; then
+        LP_TFSPACE="via $lp_terraform_env_color "
+    else
+        LP_TFSPACE=
+    fi
+
+    if _lp_container_color; then
+        LP_CONTAINER="via $lp_container_color "
+    else
+        LP_CONTAINER=
+    fi
+
+    if _lp_software_collections_color; then
+        LP_SCLS="via $lp_software_collections_color "
+    else
+        LP_SCLS=
+    fi
+
+    if _lp_aws_profile_color; then
+        LP_AWS_PROFILE="via $lp_aws_profile_color "
+    else
+        LP_AWS_PROFILE=
+    fi
+
+    if _lp_cmake_color; then
+        LP_CMAKE="via $lp_cmake_color "
+    else
+        LP_CMAKE=
+    fi
+
+    if _lp_runtime_color; then
+        LP_RUNTIME="took $lp_runtime_color "
+    else
+        LP_RUNTIME=
+    fi
+
+    if _lp_error_color; then
+        LP_ERR="got $lp_error_color "
+    else
+        LP_ERR=
+    fi
+
+    if _lp_find_vcs && _lp_vcs_details_color; then
+        LP_VCS="on $lp_vcs_details_color "
+    else
+        LP_VCS=
+    fi
+
+    # Should be called after the dev env group above.
+    # if _lp_dev_env_color ; then
+    #     LP_DEV_ENV="$lp_dev_env_color"
+    # else
+    #     LP_DEV_ENV=
+    # fi
+
+    _lp_smart_mark
+    LP_MARK="${lp_smart_mark}${NO_COL} "
+}
+
+
+_lp_liquidship_theme_prompt_template() {
+
+
+    if [[ -f "${LP_PS1_FILE-}" ]]; then
+        # shellcheck source=liquid.ps1
+        source "$LP_PS1_FILE"
+    fi
+
+    if [[ -z "${LP_PS1-}" ]]; then
+        # Docker is displayed along with Singularity and Kubernetes (strange that it is not the case in Starship…),
+        # in the container section, which is not duplicated at the end, like in Starship (WTF?).
+        local n='\n'
+        PS1="${LP_USER}${LP_HOST}${LP_LIQUIDSHIP_MUX}${LP_SHLVL}${LP_DIRSTACK}at ${LP_PWD}${LP_PERM} ${LP_VCS}${LP_CONTAINER}${LP_KUBECONTEXT}${LP_CMAKE}${LP_NODE_VENV}${LP_VENV}${LP_TFSPACE}${LP_AWS_PROFILE}${LP_PROXY}${LP_PS1_POSTFIX}${LP_LIQUIDSHIP_SUDO}${LP_RUNTIME}${n}"
+        PS1+="${LP_TIME}${LP_WIFI}${LP_TEMP}${LP_LOAD}${LP_BATTERY}${LP_JOBS}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
+
+        # Get the core sections without prompt escapes and make them into a title.
+        _lp_formatted_title "${LP_PS1_PREFIX}${LP_BRACKET_OPEN}${LP_USER}${LP_HOST}${LP_MARK_PERM}${lp_path-}${LP_BRACKET_CLOSE}${LP_MARK_PREFIX}${LP_SHLVL}${LP_MARK}${LP_PS1_POSTFIX}"
+    else
+        PS1=$LP_PS1
+    fi
+
+}
+
+
+_lp_liquidship_hostname_color() {
+    if _lp_connected_display; then
+        lp_hostname_color="with ${LP_COLOR_X11_ON}X${NO_COL} "
+    else
+        lp_hostname_color="with ${LP_COLOR_X11_OFF}CLI${NO_COL} "
+    fi
+
+    if _lp_chroot; then
+        lp_hostname_color+="(within ${lp_chroot}) "
+    fi
+
+    if _lp_hostname; then
+        case "$lp_connection" in
+        lcl)
+            lp_hostname_color+="in ${LP_COLOR_HOST}${lp_hostname}${NO_COL}"
+            ;;
+        ssh)
+            # If we want a different color for each host
+            (( LP_ENABLE_SSH_COLORS )) && LP_COLOR_SSH="$LP_COLOR_HOST_HASH"
+            lp_hostname_color+="in ${LP_COLOR_SSH}${lp_hostname}${NO_COL}"
+            ;;
+        su)
+            lp_hostname_color+="in ${LP_COLOR_SU}${lp_hostname}${NO_COL}"
+            ;;
+        tel)
+            lp_hostname_color+="IN ${LP_COLOR_TELNET}${lp_hostname}${NO_COL}"
+            ;;
+        *)
+            lp_hostname_color+="in ${NO_COL}${lp_hostname}" # defaults to no color
+            ;;
+        esac
+    else
+        if [[ -n ${lp_chroot-} ]]; then
+            # End the color of the chroot
+            lp_hostname_color+=${NO_COL}
+        else
+            # Nothing to display
+            lp_hostname_color=""
+            return 1
+        fi
+    fi
+}
