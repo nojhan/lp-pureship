@@ -1,0 +1,343 @@
+
+_lp_starship_theme_activate() {
+    local lp_terminal_format
+
+    #
+    # Easy to use colors.
+    #
+    local lp_terminal_format af_color='' ab_color=''
+
+    # Colors: variables are local so they will have a value only
+    # during config loading and will not conflict with other values
+    # with the same names defined by the user outside the config.
+    local BOLD="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${_LP_CLOSE_ESC}"
+
+    # Foreground colors
+    __lp_foreground_color 0
+    local BLACK="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_GRAY="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 1
+    local RED="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_RED="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+    __lp_foreground_color 0
+    __lp_background_color 1
+    local WARN_RED="${_LP_OPEN_ESC}${af_color}${ab_color}${_LP_CLOSE_ESC}"
+    __lp_foreground_color 7
+    local CRIT_RED="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${ab_color}${_LP_CLOSE_ESC}"
+    __lp_foreground_color 3
+    local DANGER_RED="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${ab_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 2
+    local GREEN="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_GREEN="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 3
+    local YELLOW="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_YELLOW="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 4
+    local BLUE="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_BLUE="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 5
+    local PURPLE="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local MAGENTA="${PURPLE}"
+    local PINK="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_PURPLE="${PINK}"
+    local BOLD_MAGENTA="${PINK}"
+
+    __lp_foreground_color 6
+    local CYAN="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_CYAN="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    __lp_foreground_color 7
+    local WHITE="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+    local BOLD_WHITE="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
+
+    # NO_COL is special: it will be used at runtime, not just during config loading
+    NO_COL="${_LP_OPEN_ESC}${_LP_TI_RESET-}${_LP_CLOSE_ESC}"
+
+    #
+    # End of colors section.
+    #
+
+    # Liquid Prompt reconfig
+
+    LP_COLOR_USER="$BOLD_YELLOW"
+    LP_COLOR_USER_ALT="$BOLD_YELLOW"
+    LP_COLOR_USER_LOGGED="$BOLD_YELLOW"
+    LP_COLOR_USER_ROOT="$BOLD_RED"
+    LP_COLOR_SHLVL="$BOLD_YELLOW"
+    LP_MARK_SHLVL="↕️ "
+    LP_COLOR_KUBECONTEXT="$BOLD_CYAN"
+    LP_MARK_KUBECONTEXT="☸ "
+    LP_COLOR_CONTAINER="$BLUE"
+    LP_MARK_PERM=""
+    LP_COLOR_PATH="$CYAN" # Starship use bold cyan, but that hides LP's hint on directories.
+    LP_COLOR_PATH_LAST_DIR="$BOLD_CYAN"
+    LP_COLOR_PATH_SEPARATOR="$CYAN"
+    LP_COLOR_PATH_SHORTENED="$BOLD_CYAN"
+    LP_COLOR_PATH_VCS_ROOT="$BOLD_CYAN"
+    LP_COLOR_WRITE="" # "${BOLD_CYAN}"
+    LP_COLOR_NOWRITE="${RED}🔒"
+    lp_terminal_format 105 -1 1 0 15 -1
+    LP_COLOR_TERRAFORM="$lp_terminal_format"
+    # LP_MARK_TERRAFORM="💠" # TODO in LP
+    LP_COLOR_MARK_SUDO="$BOLD_BLUE"
+    LP_COLOR_RUNTIME="$BOLD_YELLOW"
+    LP_COLOR_JOB_D="$BOLD_BLUE"
+    LP_COLOR_JOB_R="$BOLD_BLUE"
+    LP_COLOR_JOB_Z="$BOLD_BLUE"
+    LP_MARK_ADAPTER=" "
+    LP_MARK_BATTERY=" "
+    LP_COLOR_TIME="$BOLD_YELLOW"
+    LP_COLOR_ERR="$BOLD_RED"
+    LP_COLOR_MARK="$BOLD_WHITE"
+
+    # Starship Config
+    LP_STARSHIP_MARK_SSH="🌐"
+    LP_STARSHIP_MARK_SUDO="🧙 "
+
+    _lp_user
+    local -i user_type="$?"
+
+    # if (( user_type < 2 )); then  # if user is not root
+    #     if (( LP_ENABLE_SUDO )); then
+    #         LP_COLOR_MARK_NO_SUDO="$LP_COLOR_MARK"
+    #     fi
+    # else # root!
+    #     if (( ! LP_ENABLE_VCS_ROOT )); then
+    #         LP_MARK_DISABLED="$LP_MARK_DEFAULT"
+    #     fi
+    # fi
+
+    # The user or connection type is not expected to change from inside the
+    # shell, so we build this just once.
+    if _lp_username_color; then
+        LP_USER="$lp_username_color in "
+    else
+        LP_USER=
+    fi
+
+    _lp_starship_hostname_color
+    LP_HOST="$lp_hostname_color"
+
+    # If we are running in a terminal multiplexer, brackets are colored
+    if _lp_multiplexer; then
+        LP_BRACKET_OPEN="${LP_COLOR_IN_MULTIPLEXER}${LP_MARK_MULTIPLEXER_OPEN}${NO_COL}"
+        LP_BRACKET_CLOSE="${LP_COLOR_IN_MULTIPLEXER}${LP_MARK_MULTIPLEXER_CLOSE}${NO_COL}"
+    else
+        LP_BRACKET_OPEN="${LP_MARK_BRACKET_OPEN}"
+        LP_BRACKET_CLOSE="${LP_MARK_BRACKET_CLOSE}"
+    fi
+
+    _lp_terminal_device
+    # shellcheck disable=SC2034
+    LP_TTYN=$lp_terminal_device
+}
+
+_lp_starship_theme_directory() {
+    _lp_default_theme_directory
+}
+
+_lp_starship_theme_prompt() {
+    _lp_starship_theme_prompt_data
+    _lp_starship_theme_prompt_template
+}
+
+_lp_starship_theme_prompt_data() {
+    # left of main prompt: space at right
+    if _lp_jobcount_color; then
+        LP_JOBS="$lp_jobcount_color "
+    else
+        LP_JOBS=
+    fi
+    # if _lp_temperature_color; then
+    #     LP_TEMP="$lp_temperature_color "
+    # else
+    #     LP_TEMP=
+    # fi
+    # if _lp_load_color; then
+    #     LP_LOAD="$lp_load_color "
+    # else
+    #     LP_LOAD=
+    # fi
+    if _lp_battery_color; then
+        LP_BATT="$lp_battery_color "
+    else
+        LP_BATT=
+    fi
+    # if _lp_wifi_signal_strength_color; then
+    #     LP_WIFI="$lp_wifi_signal_strength_color "
+    # else
+    #     LP_WIFI=
+    # fi
+
+    if _lp_time_color; then
+        LP_TIME="$lp_time_color "
+    # elif _lp_analog_time_color; then
+    #     LP_TIME="$lp_analog_time_color "
+    else
+        LP_TIME=
+    fi
+
+    if _lp_sudo_active_color; then
+        # LP_COLOR_MARK="$lp_sudo_active_color"
+        LP_STARSHIP_SUDO="${LP_COLOR_MARK_SUDO}${LP_STARSHIP_MARK_SUDO}${NO_COL} "
+    fi
+
+    # if _lp_dirstack_color; then
+    #     LP_DIRSTACK=" $lp_dirstack_color"
+    # else
+    #     LP_DIRSTACK=
+    # fi
+
+    # in main prompt: no space
+    # if _lp_http_proxy_color; then
+    #     LP_PROXY="$lp_http_proxy_color"
+    # else
+    #     LP_PROXY=
+    # fi
+
+    if _lp_shell_level_color; then
+        LP_SHLVL="$lp_shell_level_color "
+    else
+        LP_SHLVL=
+    fi
+
+    if _lp_python_env_color ; then
+        LP_VENV="via $lp_python_env_color "
+    else
+        LP_VENV=
+    fi
+
+    if _lp_node_env_color; then
+        LP_NODE_VENV="via $lp_node_env_color "
+    else
+        LP_NODE_VENV=
+    fi
+
+    if _lp_ruby_env_color; then
+        LP_RUBY_VENV="via $lp_ruby_env_color "
+    else
+        LP_RUBY_VENV=
+    fi
+
+    if _lp_kubernetes_context_color; then
+        LP_KUBECONTEXT="via $lp_kubernetes_context_color "
+    else
+        LP_KUBECONTEXT=
+    fi
+
+    if _lp_terraform_env_color; then
+        LP_TFSPACE="via $lp_terraform_env_color "
+    else
+        LP_TFSPACE=
+    fi
+
+    if _lp_container_color; then
+        LP_CONTAINER="via $lp_container_color "
+    else
+        LP_CONTAINER=
+    fi
+
+    if _lp_software_collections_color; then
+        LP_SCLS="via $lp_software_collections_color "
+    else
+        LP_SCLS=
+    fi
+
+    if _lp_aws_profile_color; then
+        LP_AWS_PROFILE="via $lp_aws_profile_color "
+    else
+        LP_AWS_PROFILE=
+    fi
+
+    if _lp_cmake_color; then
+        LP_CMAKE="via $lp_cmake_color "
+    else
+        LP_CMAKE=
+    fi
+
+    if _lp_runtime_color; then
+        LP_RUNTIME="took $lp_runtime_color "
+    else
+        LP_RUNTIME=
+    fi
+
+    if _lp_error_color; then
+        LP_ERR="$lp_error_color "
+    else
+        LP_ERR=
+    fi
+
+    if _lp_find_vcs && _lp_vcs_details_color; then
+        LP_VCS="on $lp_vcs_details_color "
+    else
+        LP_VCS=
+    fi
+
+    # Should be called after the dev env group above.
+    # if _lp_dev_env_color ; then
+    #     LP_DEV_ENV="$lp_dev_env_color"
+    # else
+    #     LP_DEV_ENV=
+    # fi
+
+    _lp_smart_mark
+    LP_MARK="${lp_smart_mark}${NO_COL} "
+}
+
+
+_lp_starship_theme_prompt_template() {
+
+# Starship sections:
+# username, hostname, localip, shlvl, singularity, kubernetes, directory, vcsh, git_branch, git_commit, git_state, git_metrics, git_status, hg_branch, docker_context, package, c, cmake, cobol, daml, dart, deno, dotnet, elixir, elm, erlang, golang, haskell, helm, java, julia, kotlin, lua, nim, nodejs, ocaml, perl, php, pulumi, purescript, python, raku, rlang, red, ruby, rust, scala, swift, terraform, vlang, vagrant, zig, buf, nix_shell, conda, spack, memory_usage, aws, gcloud, openstack, azure, env_var, crystal, custom, sudo, cmd_duration, line_break
+# jobs, battery, time, status, container, shell
+
+# Not supported by LP:
+# localip, vcsh, package, C, cobol, daml, dart, deno, dotnet, elixir, elm, erlang, golang, haskell, helm, java, julia, kotlin, lua, nim, ocaml, perl, php, pulumi, purescript, raku, rlang, red, ruby, rust, scala, swift, vlang, vagrant, zig, buf, nix_shell, conda, spack, memory_usage, gcloud, openstack, azure, env_var, crystal
+
+# Not supported by Starship:
+# load, temp, title, X11, chroot, SU, telnet, ssh color, wifi, dirstack, proxy, analog time, tmux/screen.
+
+    if [[ -f "${LP_PS1_FILE-}" ]]; then
+        # shellcheck source=liquid.ps1
+        source "$LP_PS1_FILE"
+    fi
+
+    if [[ -z "${LP_PS1-}" ]]; then
+        # Docker is displayed along with Singularity and Kubernetes (strange that it is not the case in Starship…),
+        # in the container section, which is not duplicated at the end, like in Starship (WTF?).
+        local n='\n'
+        PS1="${LP_USER}${LP_HOST}${LP_SHLVL}${LP_CONTAINER}${LP_KUBECONTEXT}${LP_PWD}${LP_PERM} ${LP_VCS}${LP_CMAKE}${LP_NODE_VENV}${LP_VENV}${LP_TFSPACE}${LP_AWS_PROFILE}${LP_PS1_POSTFIX}${LP_STARSHIP_SUDO}${LP_RUNTIME}${n}"
+        PS1+="${LP_JOBS}${LP_BATTERY}${LP_TIME}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
+
+        # No title support in Starship.
+    else
+        PS1=$LP_PS1
+    fi
+
+}
+
+
+_lp_starship_hostname_color() {
+    # No X11 support in Starship.
+    # No Chroot support in Starship.
+
+    if _lp_hostname; then
+        case "$lp_connection" in
+        lcl)
+            lp_hostname_color+="${LP_COLOR_HOST}${lp_hostname}${NO_COL}"
+            ;;
+        ssh)
+            # No hashed host color in Starship.
+            lp_hostname_color+="${LP_COLOR_SSH}${LP_STARSHIP_MARK_SSH}${NO_COL} on ${LP_COLOR_HOST}${lp_hostname}${NO_COL}"
+            ;;
+        # No SU support in Starship.
+        # No telnet support in Starship.
+        esac
+    fi
+}
+
