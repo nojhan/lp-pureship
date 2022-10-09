@@ -7,6 +7,9 @@ _lp_liquidship_theme_activate() {
     local CYAN="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
     local BOLD_CYAN="${_LP_OPEN_ESC}${_LP_TI_BOLD-}${af_color}${_LP_CLOSE_ESC}"
 
+    __lp_foreground_color 11
+    local YELLOW="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+
     NO_COL="${_LP_OPEN_ESC}${_LP_TI_RESET-}${_LP_CLOSE_ESC}"
 
     # Liquid Prompt reconfig
@@ -24,10 +27,11 @@ _lp_liquidship_theme_activate() {
     LP_COLOR_PATH_SEPARATOR="$CYAN"
     LP_COLOR_PATH_SHORTENED="$BOLD_CYAN"
     LP_COLOR_PATH_VCS_ROOT="$BOLD_CYAN"
+    LP_COLOR_MARK_SUDO="$YELLOW"
 
     # Starship Config
     LP_LIQUIDSHIP_MARK_SSH="🌐"
-    LP_LIQUIDSHIP_MARK_SUDO="🧙 "
+    LP_LIQUIDSHIP_MARK_SUDO="!"
     LP_LIQUIDSHIP_MARK_MUX="🖽 "
 
     _lp_user
@@ -231,8 +235,8 @@ _lp_liquidship_theme_prompt_template() {
         # Docker is displayed along with Singularity and Kubernetes (strange that it is not the case in Starship…),
         # in the container section, which is not duplicated at the end, like in Starship (WTF?).
         local n='\n'
-        PS1="${LP_USER}${LP_HOST}${LP_LIQUIDSHIP_MUX}${LP_SHLVL}${LP_DIRSTACK}at ${LP_PWD}${LP_PERM} ${LP_VCS}${LP_CONTAINER}${LP_KUBECONTEXT}${LP_CMAKE}${LP_NODE_VENV}${LP_VENV}${LP_TFSPACE}${LP_AWS_PROFILE}${LP_PROXY}${LP_PS1_POSTFIX}${LP_LIQUIDSHIP_SUDO}${LP_RUNTIME}${n}"
-        PS1+="${LP_TIME}${LP_WIFI}${LP_TEMP}${LP_LOAD}${LP_BATTERY}${LP_JOBS}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
+        PS1="${LP_USER}${LP_HOST}${LP_LIQUIDSHIP_MUX}${LP_SHLVL}${LP_DIRSTACK}at ${LP_PWD}${LP_PERM} ${LP_VCS}${LP_CONTAINER}${LP_KUBECONTEXT}${LP_CMAKE}${LP_NODE_VENV}${LP_VENV}${LP_TFSPACE}${LP_AWS_PROFILE}${LP_PROXY}${LP_PS1_POSTFIX}${LP_RUNTIME}${n}"
+        PS1+="${LP_TIME}${LP_WIFI}${LP_TEMP}${LP_LOAD}${LP_BATTERY}${LP_JOBS}${LP_LIQUIDSHIP_SUDO}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
 
         # Get the core sections without prompt escapes and make them into a title.
         _lp_formatted_title "${LP_PS1_PREFIX}${LP_BRACKET_OPEN}${LP_USER}${LP_HOST}${LP_MARK_PERM}${lp_path-}${LP_BRACKET_CLOSE}${LP_MARK_PREFIX}${LP_SHLVL}${LP_MARK}${LP_PS1_POSTFIX}"
