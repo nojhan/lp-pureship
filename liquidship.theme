@@ -10,6 +10,9 @@ _lp_liquidship_theme_activate() {
     __lp_foreground_color 11
     local YELLOW="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
 
+    __lp_foreground_color 9
+    local RED="${_LP_OPEN_ESC}${af_color}${_LP_CLOSE_ESC}"
+
     NO_COL="${_LP_OPEN_ESC}${_LP_TI_RESET-}${_LP_CLOSE_ESC}"
 
     # Liquid Prompt reconfig
@@ -50,7 +53,7 @@ _lp_liquidship_theme_activate() {
     # The user or connection type is not expected to change from inside the
     # shell, so we build this just once.
     if _lp_username_color; then
-        LP_USER="$lp_username_color in "
+        LP_USER="$lp_username_color"
     else
         LP_USER=
     fi
@@ -62,7 +65,7 @@ _lp_liquidship_theme_activate() {
     if _lp_multiplexer; then
         LP_LIQUIDSHIP_MUX="in ${LP_COLOR_IN_MULTIPLEXER}${LP_LIQUIDSHIP_MARK_MUX}${NO_COL} "
     else
-        LP_LIQUIDSHIP_MARK_MUX=
+        LP_LIQUIDSHIP_MUX=
     fi
 
     _lp_terminal_device
@@ -118,6 +121,8 @@ _lp_liquidship_theme_prompt_data() {
     if _lp_sudo_active_color; then
         # LP_COLOR_MARK="$lp_sudo_active_color"
         LP_LIQUIDSHIP_SUDO="${LP_COLOR_MARK_SUDO}${LP_LIQUIDSHIP_MARK_SUDO}${NO_COL} "
+    else
+        LP_LIQUIDSHIP_SUDO=
     fi
 
     if _lp_dirstack_color; then
@@ -234,9 +239,9 @@ _lp_liquidship_theme_prompt_template() {
     if [[ -z "${LP_PS1-}" ]]; then
         # Docker is displayed along with Singularity and Kubernetes (strange that it is not the case in Starship…),
         # in the container section, which is not duplicated at the end, like in Starship (WTF?).
-        local n='\n'
+        local n=$'\n'
         PS1="${LP_USER}${LP_HOST}${LP_LIQUIDSHIP_MUX}${LP_SHLVL}${LP_DIRSTACK}at ${LP_PWD}${LP_PERM} ${LP_VCS}${LP_CONTAINER}${LP_KUBECONTEXT}${LP_CMAKE}${LP_NODE_VENV}${LP_VENV}${LP_TFSPACE}${LP_AWS_PROFILE}${LP_PROXY}${LP_PS1_POSTFIX}${LP_RUNTIME}${n}"
-        PS1+="${LP_TIME}${LP_WIFI}${LP_TEMP}${LP_LOAD}${LP_BATTERY}${LP_JOBS}${LP_LIQUIDSHIP_SUDO}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
+        PS1+="${LP_TIME}${LP_WIFI}${LP_TEMP}${LP_LOAD}${LP_BATT}${LP_JOBS}${LP_LIQUIDSHIP_SUDO}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
 
         # Get the core sections without prompt escapes and make them into a title.
         _lp_formatted_title "${LP_PS1_PREFIX}${LP_BRACKET_OPEN}${LP_USER}${LP_HOST}${LP_MARK_PERM}${lp_path-}${LP_BRACKET_CLOSE}${LP_MARK_PREFIX}${LP_SHLVL}${LP_MARK}${LP_PS1_POSTFIX}"
@@ -249,33 +254,33 @@ _lp_liquidship_theme_prompt_template() {
 
 _lp_liquidship_hostname_color() {
     if _lp_connected_display; then
-        lp_hostname_color="with ${LP_COLOR_X11_ON}X${NO_COL} "
+        lp_hostname_color=" with ${LP_COLOR_X11_ON}X${NO_COL}"
     else
-        lp_hostname_color="with ${LP_COLOR_X11_OFF}CLI${NO_COL} "
+        lp_hostname_color=" with ${LP_COLOR_X11_OFF}CLI${NO_COL}"
     fi
 
     if _lp_chroot; then
-        lp_hostname_color+="(within ${lp_chroot}) "
+        lp_hostname_color+="(within ${lp_chroot})"
     fi
 
     if _lp_hostname; then
         case "$lp_connection" in
         lcl)
-            lp_hostname_color+="in ${LP_COLOR_HOST}${lp_hostname}${NO_COL}"
+            lp_hostname_color+=" in ${LP_COLOR_HOST}${lp_hostname}${NO_COL}"
             ;;
         ssh)
             # If we want a different color for each host
             (( LP_ENABLE_SSH_COLORS )) && LP_COLOR_SSH="$LP_COLOR_HOST_HASH"
-            lp_hostname_color+="in ${LP_COLOR_SSH}${lp_hostname}${NO_COL}"
+            lp_hostname_color+=" in ${LP_COLOR_SSH}${lp_hostname}${NO_COL}"
             ;;
         su)
-            lp_hostname_color+="in ${LP_COLOR_SU}${lp_hostname}${NO_COL}"
+            lp_hostname_color+=" in ${LP_COLOR_SU}${lp_hostname}${NO_COL}"
             ;;
         tel)
-            lp_hostname_color+="IN ${LP_COLOR_TELNET}${lp_hostname}${NO_COL}"
+            lp_hostname_color+=" IN ${LP_COLOR_TELNET}${lp_hostname}${NO_COL}"
             ;;
         *)
-            lp_hostname_color+="in ${NO_COL}${lp_hostname}" # defaults to no color
+            lp_hostname_color+=" in ${NO_COL}${lp_hostname}" # defaults to no color
             ;;
         esac
     else

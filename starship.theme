@@ -185,6 +185,8 @@ _lp_starship_theme_prompt_data() {
     if _lp_sudo_active_color; then
         # LP_COLOR_MARK="$lp_sudo_active_color"
         LP_STARSHIP_SUDO="${LP_COLOR_MARK_SUDO}${LP_STARSHIP_MARK_SUDO}${NO_COL} "
+    else
+        LP_STARSHIP_SUDO=
     fi
 
     # if _lp_dirstack_color; then
@@ -310,9 +312,9 @@ _lp_starship_theme_prompt_template() {
     if [[ -z "${LP_PS1-}" ]]; then
         # Docker is displayed along with Singularity and Kubernetes (strange that it is not the case in Starship…),
         # in the container section, which is not duplicated at the end, like in Starship (WTF?).
-        local n='\n'
+        local n=$'\n'
         PS1="${LP_USER}${LP_HOST}${LP_SHLVL}${LP_CONTAINER}${LP_KUBECONTEXT}${LP_PWD}${LP_PERM} ${LP_VCS}${LP_CMAKE}${LP_NODE_VENV}${LP_VENV}${LP_TFSPACE}${LP_AWS_PROFILE}${LP_PS1_POSTFIX}${LP_STARSHIP_SUDO}${LP_RUNTIME}${n}"
-        PS1+="${LP_JOBS}${LP_BATTERY}${LP_TIME}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
+        PS1+="${LP_JOBS}${LP_BATT}${LP_TIME}${LP_ERR}${LP_COLOR_MARK}${LP_MARK}"
 
         # No title support in Starship.
     else

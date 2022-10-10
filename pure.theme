@@ -121,6 +121,7 @@ _lp_pure_theme_activate() {
 
     LP_COLOR_PATH="$BLUE"
     LP_COLOR_PATH_SEPARATOR="$BLUE"
+    LP_COLOR_PATH_SHORTENED="$BLUE"
     LP_COLOR_PATH_VCS_ROOT="$BOLD"
     LP_COLOR_PATH_LAST_DIR="$BOLD"
     LP_COLOR_PATH_ROOT="$BOLD_YELLOW"
@@ -155,7 +156,7 @@ _lp_pure_theme_activate() {
     fi
 
     if _lp_hostname_color ; then
-        LP_HOST="$lp_hostname_color "
+        LP_HOST="$lp_hostname_color"
     else
         LP_HOST=
     fi
@@ -165,12 +166,12 @@ _lp_pure_theme_directory() {
     local lp_path_format
     _lp_path_format "$LP_COLOR_PATH" "$LP_COLOR_PATH_LAST_DIR" "$LP_COLOR_PATH_VCS_ROOT" "$LP_COLOR_PATH_SHORTENED" "/" "$LP_COLOR_PATH_SEPARATOR"
 
-    LP_PWD="${lp_path_format}${NO_COL}"
+    LP_PWD=" ${lp_path_format}${NO_COL}"
 }
 
 _lp_pure_theme_prompt() {
     if _lp_jobcount_color; then
-        LP_JOBS=" ${LP_PURE_COLOR_JOBS}${LP_PURE_MARK_JOBS}${NO_COL}"
+        LP_JOBS="${LP_PURE_COLOR_JOBS}${LP_PURE_MARK_JOBS}${NO_COL}"
     else
         LP_JOBS=
     fi
@@ -213,7 +214,8 @@ _lp_pure_theme_prompt_template() {
     fi
 
     if [[ -z "${LP_PS1-}" ]]; then
-        PS1="${LP_USER}${LP_HOST}${LP_PWD}${LP_VCS}${LP_RUNTIME}\n${LP_VENV}${LP_JOBS}"
+        local n=$'\n'
+        PS1="${LP_USER}${LP_HOST}${LP_PWD}${LP_VCS}${LP_RUNTIME}${n}${LP_VENV}${LP_JOBS}"
 
         if [[ -n "${LP_ERR}" ]] ; then
             PS1+="${LP_COLOR_ERR}${LP_MARK} "
@@ -222,7 +224,7 @@ _lp_pure_theme_prompt_template() {
         fi
 
         # Get the core sections without prompt escapes and make them into a title.
-        _lp_formatted_title "${LP_USER}${LP_HOST}${lp_path-}${LP_MARK}"
+        # _lp_formatted_title "${LP_USER}${LP_HOST}${lp_path-}${LP_MARK}"
     else
         PS1=$LP_PS1
     fi
@@ -252,7 +254,7 @@ _lp_pure_vcs() {
     if _lp_vcs_commits_off_remote; then
         lp_vcs_details_color="$LP_COLOR_COMMITS_BEHIND"
         if [[ "$lp_vcs_commit_ahead" -ne "0" && "$lp_vcs_commit_behind" -ne "0" ]]; then
-            has_commit="${LP_COLOR_COMMITS}${LP_PURE_GIT_UP_ARROW}{NO_COL}${LP_COLOR_COMMITS_BEHIND}${LP_PURE_GIT_DOWN_ARROW}${NO_COL}"
+            has_commit="${LP_COLOR_COMMITS}${LP_PURE_GIT_UP_ARROW}${NO_COL}${LP_COLOR_COMMITS_BEHIND}${LP_PURE_GIT_DOWN_ARROW}${NO_COL}"
         elif [[ "$lp_vcs_commit_ahead" -ne "0" ]]; then
             has_commit="${LP_COLOR_COMMITS}${LP_PURE_GIT_UP_ARROW}${NO_COL}"
             lp_vcs_details_color="$LP_COLOR_COMMITS"
@@ -283,18 +285,17 @@ _lp_pure_vcs() {
         if [[ -n "$has_lines" ]]; then
             lp_vcs_details_color+="${LP_COLOR_DIFF}${has_lines}${NO_COL}${has_commit}"
         fi
-        lp_vcs_details_color+="${has_commit}"
     fi
 
     if _lp_vcs_head_status; then
-        lp_vcs_details_color+=" $LP_COLOR_CHANGES$lp_vcs_head_status"
+        lp_vcs_details_color+=" ${LP_COLOR_CHANGES}${lp_vcs_head_status}"
         if [[ -n "${lp_vcs_head_details-}" ]]; then
             lp_vcs_details_color+=" ${lp_vcs_head_details}"
         fi
     fi
 
     if _lp_vcs_stash_count; then
-        lp_vcs_details_color+=" $LP_COLOR_COMMITS$LP_MARK_STASH"
+        lp_vcs_details_color+=" ${LP_COLOR_COMMITS}${LP_MARK_STASH}"
     fi
 
     # Pure does not show untracked files.
